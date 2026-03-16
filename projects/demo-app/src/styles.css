@@ -1,1 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  --theme-primary-color: #ffffff;
+  --theme-secondary-color: #f3f4f6;
+  --theme-font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --theme-active-color: #8b5cf6;
+  --theme-hover-color: #f9fafb;
+  --theme-border-color: #e5e7eb;
+  --theme-font-color: #1f2937;
+  --theme-font-size: 14px;
+  --theme-font-weight: 500;
+}
+
+body {
+  margin: 0;
+  font-family: var(--theme-font-family);
+  background-color: #f3f4f6;
+}
+
+/* Dark mode basic variables */
+.dark {
+  --theme-primary-color: #1f2937;
+  --theme-secondary-color: #111827;
+  --theme-font-color: #f9fafb;
+  --theme-border-color: #374151;
+  --theme-hover-color: #374151;
+}

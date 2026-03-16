@@ -1,48 +1,104 @@
 <aside class="left-sidenav" [style.width]="sidebarWidth()" [class.collapsed]="isCollapsed()">
   <div class="sidenav-header">
-    <button class="toggle-btn" (click)="toggleSidenav()">
-      <span class="material-icons">{{ isCollapsed() ? 'menu' : 'menu_open' }}</span>
+    <div class="logo-container">
+      <div class="logo-wrapper">
+        <img [src]="brandLogo()" alt="Logo" class="company-logo">
+        <span class="logo-text">{{ brandName() }}</span>
+      </div>
+    </div>
+    <button class="menu-toggle-btn" (click)="toggleSidenav()" *ngIf="!isCollapsed()">
+      <svg viewBox="0 0 24 24" fill="none" class="toggle-icon">
+        <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <button class="menu-toggle-btn-closed" (click)="toggleSidenav()" *ngIf="isCollapsed()">
+      <svg viewBox="0 0 24 24" fill="none" class="arrow-icon">
+        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
   </div>
 
   <nav class="sidenav-content">
     <ul class="menu-list">
-      <ng-container *ngTemplateOutlet="menuRecursive; context: { $implicit: menu() }"></ng-container>
+      <ng-container *ngTemplateOutlet="menuRecursive; context: { $implicit: menu(), level: 1 }"></ng-container>
     </ul>
   </nav>
 
-  <ng-template #menuRecursive let-items>
+  <div class="sidenav-footer">
+    <div class="user-card" (click)="toggleUserMenu()" [class.active]="userMenuOpen()">
+      <div class="user-avatar-footer">
+        <span class="avatar-text-footer">{{ user().name.charAt(0) }}</span>
+      </div>
+      <div class="user-info-footer" *ngIf="!isCollapsed()">
+        <div class="user-name-footer">{{ user().name }}</div>
+        <div class="user-role-footer">{{ user().role }}</div>
+      </div>
+      <button class="user-menu-toggle" [class.rotated]="userMenuOpen()" *ngIf="!isCollapsed()">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- User Menu Popup -->
+    <div class="user-menu-popup" *ngIf="userMenuOpen()" [class.popup-closed-sidenav]="isCollapsed()">
+      <div class="user-menu-header">
+        <div class="user-avatar-menu">
+           <span class="avatar-text-menu">{{ user().name.charAt(0) }}</span>
+        </div>
+        <div class="user-details-menu">
+          <div class="user-name-menu">{{ user().name }}</div>
+          <div class="user-handle-menu">@{{ user().name.toLowerCase().replace(' ', '') }}</div>
+        </div>
+      </div>
+      <div class="user-menu-items">
+        <button class="user-menu-item">
+          <span>Profile</span>
+        </button>
+        <button class="user-menu-item">
+          <span>Settings</span>
+        </button>
+        <div class="user-menu-divider"></div>
+        <button class="user-menu-item logout-item">
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #menuRecursive let-items let-level="level">
     @for (item of items; track item.label) {
-      <li class="menu-item-container">
+      <li class="menu-item">
         @if (hasChildren(item)) {
-          <div class="menu-item" 
+          <div class="menu-link-parent" 
+               [class.menu-link]="level === 1"
+               [class.submenu-link-parent]="level > 1"
                (click)="toggleSubmenu(item, $event)" 
-               [class.expanded]="isExpanded(item)"
-               [class.active]="isActive(item)">
-            @if (item.icon) {
-              <span class="material-icons menu-icon">{{ item.icon }}</span>
+               [class.active]="isActive(item)"
+               [class.expanded]="isExpanded(item)">
+            @if (item.icon && level === 1) {
+              <span class="material-icons menu-icon-svg">{{ item.icon }}</span>
             }
-            @if (!isCollapsed()) {
-              <span class="menu-label">{{ item.label }}</span>
-              <span class="material-icons arrow">{{ isExpanded(item) ? 'expand_less' : 'expand_more' }}</span>
-            }
+            <span class="menu-label">{{ item.label }}</span>
+            <svg viewBox="0 0 24 24" fill="none" [class.chevron-icon]="level === 1" [class.submenu-chevron]="level > 1" [class.rotated]="isExpanded(item)">
+              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
           @if (!isCollapsed() && isExpanded(item)) {
-            <ul class="submenu">
-              <ng-container *ngTemplateOutlet="menuRecursive; context: { $implicit: item.children }"></ng-container>
+            <ul [class.submenu-list]="level === 1" [class.nested-submenu]="level === 2" [class.extra-nested-submenu]="level === 3">
+              <ng-container *ngTemplateOutlet="menuRecursive; context: { $implicit: item.children, level: level + 1 }"></ng-container>
             </ul>
           }
         } @else {
-          <a class="menu-item" 
-             [routerLink]="item.route" 
+          <a [routerLink]="item.route" 
              routerLinkActive="active" 
-             [routerLinkActiveOptions]="{ exact: true }">
-            @if (item.icon) {
-              <span class="material-icons menu-icon">{{ item.icon }}</span>
+             [routerLinkActiveOptions]="{ exact: true }"
+             [class.menu-link]="level === 1"
+             [class.submenu-link]="level > 1">
+            @if (item.icon && level === 1) {
+              <span class="material-icons menu-icon-svg">{{ item.icon }}</span>
             }
-            @if (!isCollapsed()) {
-              <span class="menu-label">{{ item.label }}</span>
-            }
+            <span class="menu-label">{{ item.label }}</span>
           </a>
         }
       </li>

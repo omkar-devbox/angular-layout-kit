@@ -15,6 +15,18 @@ export class LeftSidenavComponent {
   menu = input<MenuItem[]>([]);
   width = input('250px');
   collapsedWidth = input('80px');
+  brandName = input('Antigravity');
+  brandLogo = input('assets/logo.svg');
+  user = input<{ name: string; role: string; avatar?: string }>({ 
+    name: 'John Doe', 
+    role: 'Administrator' 
+  });
+
+  readonly userMenuOpen = signal(false);
+
+  toggleUserMenu() {
+    this.userMenuOpen.set(!this.userMenuOpen());
+  }
 
   private readonly sidenavService = inject(SidenavService);
   private readonly router = inject(Router);

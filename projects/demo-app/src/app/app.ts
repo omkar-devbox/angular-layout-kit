@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { 
-  LeftSidenavComponent, 
-  LayoutContainerComponent, 
-  TopNavbarComponent, 
+import {
+  LeftSidenavComponent,
+  LayoutContainerComponent,
+  TopNavbarComponent,
   FooterComponent,
   LayoutService,
   ThemeService
@@ -14,11 +14,11 @@ import {
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, 
-    RouterModule, 
-    LeftSidenavComponent, 
-    LayoutContainerComponent, 
-    TopNavbarComponent, 
+    CommonModule,
+    RouterModule,
+    LeftSidenavComponent,
+    LayoutContainerComponent,
+    TopNavbarComponent,
     FooterComponent
   ],
   templateUrl: './app.html',
@@ -62,6 +62,13 @@ export class AppComponent {
 
   sidebarWidth = '250px';
   sidebarCollapsedWidth = '80px';
+  brandName = 'TradeFlow';
+  brandLogo = 'https://angular.io/assets/images/logos/angular/angular.svg';
+  currentUser = {
+    name: 'Omkar Rege',
+    role: 'Fullstack Developer',
+    avatar: 'https://github.com/omkarpathak.png'
+  };
 
   toggleSidenav() {
     this.layoutService.toggleLeftSidenav();
@@ -69,7 +76,14 @@ export class AppComponent {
 
   switchTheme() {
     const current = this.themeService.theme();
-    this.themeService.setTheme(current === 'light' ? 'dark' : 'light');
+    const nextTheme = current === 'light' ? 'dark' : 'light';
+    this.themeService.setTheme(nextTheme);
+
+    if (nextTheme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
   }
 
   simulateMobile() {
