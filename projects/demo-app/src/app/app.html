@@ -1,0 +1,29 @@
+<lt-layout-container>
+  <lt-top-navbar>
+    <div class="navbar-content">
+      <span class="brand">Layout Library Demo</span>
+      <div class="toolbar">
+        <button (click)="toggleSidenav()" class="btn">Toggle Sidebar</button>
+        <button (click)="switchTheme()" class="btn">Switch Theme</button>
+        <button (click)="simulateMobile()" class="btn">Simulate Mobile</button>
+        <button class="btn">Open Right Panel</button>
+      </div>
+    </div>
+  </lt-top-navbar>
+
+  <lt-left-sidenav 
+    [menu]="menu" 
+    [width]="sidebarWidth" 
+    [collapsedWidth]="sidebarCollapsedWidth">
+  </lt-left-sidenav>
+
+  <div class="page-container">
+    <router-outlet></router-outlet>
+  </div>
+
+  <lt-footer>
+    <div class="footer-content">
+      &copy; 2026 Layout Library Demo. All rights reserved.
+    </div>
+  </lt-footer>
+</lt-layout-container>

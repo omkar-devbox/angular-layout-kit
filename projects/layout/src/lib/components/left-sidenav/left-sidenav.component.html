@@ -1,0 +1,51 @@
+<aside class="left-sidenav" [style.width]="sidebarWidth()" [class.collapsed]="isCollapsed()">
+  <div class="sidenav-header">
+    <button class="toggle-btn" (click)="toggleSidenav()">
+      <span class="material-icons">{{ isCollapsed() ? 'menu' : 'menu_open' }}</span>
+    </button>
+  </div>
+
+  <nav class="sidenav-content">
+    <ul class="menu-list">
+      <ng-container *ngTemplateOutlet="menuRecursive; context: { $implicit: menu() }"></ng-container>
+    </ul>
+  </nav>
+
+  <ng-template #menuRecursive let-items>
+    @for (item of items; track item.label) {
+      <li class="menu-item-container">
+        @if (hasChildren(item)) {
+          <div class="menu-item" 
+               (click)="toggleSubmenu(item, $event)" 
+               [class.expanded]="isExpanded(item)"
+               [class.active]="isActive(item)">
+            @if (item.icon) {
+              <span class="material-icons menu-icon">{{ item.icon }}</span>
+            }
+            @if (!isCollapsed()) {
+              <span class="menu-label">{{ item.label }}</span>
+              <span class="material-icons arrow">{{ isExpanded(item) ? 'expand_less' : 'expand_more' }}</span>
+            }
+          </div>
+          @if (!isCollapsed() && isExpanded(item)) {
+            <ul class="submenu">
+              <ng-container *ngTemplateOutlet="menuRecursive; context: { $implicit: item.children }"></ng-container>
+            </ul>
+          }
+        } @else {
+          <a class="menu-item" 
+             [routerLink]="item.route" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{ exact: true }">
+            @if (item.icon) {
+              <span class="material-icons menu-icon">{{ item.icon }}</span>
+            }
+            @if (!isCollapsed()) {
+              <span class="menu-label">{{ item.label }}</span>
+            }
+          </a>
+        }
+      </li>
+    }
+  </ng-template>
+</aside>
